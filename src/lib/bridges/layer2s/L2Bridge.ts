@@ -22,7 +22,6 @@ export class L2Bridge implements IBridge {
         break;
       }
       case 'Optimism': {
-        console.log('eric dsfsdfasdfasd');
         this.l2Provider = new providers.JsonRpcProvider(config.optimismL2Rpc);
         break;
       }
