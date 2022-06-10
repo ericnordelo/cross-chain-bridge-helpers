@@ -38,7 +38,7 @@ For now supports only Arbitrum and Optimism.
 4. Import the `L2Bridge` class, and load the providers after creating the instance:
 
    ```code
-    import { L2Bridge } from '../src/lib/bridges/layer2s/L2Bridge';
+    import { L2Bridge } from '@ericnordelo/cross-chain-bridge-helpers';
 
     const bridge = new L2Bridge('Arbitrum');
     await bridge.loadProviders();
