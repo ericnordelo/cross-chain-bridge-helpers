@@ -2,4 +2,8 @@ node_modules
 
 dist
 
+# config files
 ccbh.json
+
+# environment files
+.env
