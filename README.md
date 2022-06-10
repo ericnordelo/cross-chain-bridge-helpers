@@ -12,7 +12,20 @@ For now supports only Arbitrum and Optimism.
    $ yarn add @ericnordelo/cross-chain-bridge-helpers
    ```
 
-2. Add the `.env` file with the required environment for the `ccbh.js` config file:
+2. Add the `ccbh.js` config file with the required providers:
+
+   ```sh
+   require('dotenv').config();
+
+   module.exports = {
+      arbitrumL2Rpc: process.env.ARBITRUM_L2_RPC || '',
+      arbitrumL1Rpc: process.env.ARBITRUM_L1_RPC || '',
+      optimismL2Rpc: process.env.OPTIMISM_L2_RPC || '',
+   };
+
+   ```
+
+3. Add the `.env` file with the required environment for the `ccbh.js` config file:
 
    ```sh
    ARBITRUM_L2_RPC=[your rpc uri]
@@ -22,7 +35,7 @@ For now supports only Arbitrum and Optimism.
    OPTIMISM_L2_RPC=[your rpc uri]
    ```
 
-3. Import the `L2Bridge` class, and load the providers after creating the instance:
+4. Import the `L2Bridge` class, and load the providers after creating the instance:
 
    ```code
     import { L2Bridge } from '../src/lib/bridges/layer2s/L2Bridge';
@@ -31,7 +44,7 @@ For now supports only Arbitrum and Optimism.
     await bridge.loadProviders();
    ```
 
-4. Now, you can use either the `getProtocolConfigParameters` or the `getProtocolConfigBytes` helpers, that will return the appropriate parameters from the selected protocol:
+5. Now, you can use either the `getProtocolConfigParameters` or the `getProtocolConfigBytes` helpers, that will return the appropriate parameters from the selected protocol:
 
    ```code
     async getProtocolConfigParameters(
@@ -49,4 +62,4 @@ For now supports only Arbitrum and Optimism.
     ): Promise<string>;
    ```
 
-5. The `getProtocolConfigBytes` result, can be used as bridgeConfig in the Openzeppelin library.
+6. The `getProtocolConfigBytes` result, can be used as bridgeConfig in the Openzeppelin library.
