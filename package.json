@@ -1,0 +1,55 @@
+{
+  "name": "@ericnordelo/cross-chain-bridge-helpers",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha -r ts-node/register 'tests/**/*.ts'",
+    "lint": "npm run lint:js",
+    "lint:fix": "npm run lint:js:fix",
+    "lint:js": "eslint --ignore-path .gitignore .",
+    "lint:js:fix": "eslint --ignore-path .gitignore . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ericnordelo/cross-chain-bridge-helpers"
+  },
+  "keywords": [
+    "cross-chain",
+    "bridges",
+    "smart-contracts",
+    "ethereum",
+    "blockchain"
+  ],
+  "author": "eric.nordelo39@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ericnordelo/cross-chain-bridge-helpers/issues"
+  },
+  "homepage": "https://github.com/ericnordelo/cross-chain-bridge-helpers#readme",
+  "dependencies": {
+    "husky": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "@types/mocha": "^9.1.1",
+    "@typescript-eslint/eslint-plugin": "^5.27.1",
+    "@typescript-eslint/parser": "^5.27.1",
+    "chai": "^4.3.6",
+    "eslint": "^8.17.0",
+    "mocha": "^10.0.0",
+    "prettier": "^2.6.2",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
+  },
+  "files": [
+    "dist/**/*"
+  ]
+}
