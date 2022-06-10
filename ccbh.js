@@ -4,5 +4,5 @@ require('dotenv').config();
 module.exports = {
   arbitrumL2Rpc: process.env.ARBITRUM_L2_RPC || '',
   arbitrumL1Rpc: process.env.ARBITRUM_L1_RPC || '',
-  optimismRPC: '',
+  optimismL2Rpc: process.env.OPTIMISM_L2_RPC || '',
 };
