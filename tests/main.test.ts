@@ -1,6 +1,9 @@
 import { L2Bridge } from '../src/lib/bridges/layer2s/L2Bridge';
-import { BigNumber } from 'ethers';
+import { BigNumber, providers } from 'ethers';
 import { assert } from 'chai';
+import { config } from 'dotenv';
+
+config({ path: '../.env' });
 
 describe('Plugin', function () {
   it('assert true', function () {
@@ -8,8 +11,11 @@ describe('Plugin', function () {
   });
 
   it('runs', async function () {
-    const bridge = new L2Bridge('Optimism-L1L2');
-    await bridge.loadProviders();
+    const l1Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L1_RPC);
+    const l2Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L2_RPC);
+
+    const bridge = new L2Bridge('Arbitrum-L1L2-Rinkeby');
+    await bridge.loadProviders({ l1Provider, l2Provider });
 
     await bridge.getCrossChainTxConfigBytes(
       '0x4A8Cc549c71f12817F9aA25F7f6a37EB1A4Fa087',

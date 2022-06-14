@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "test:run": "ts-node src/index.ts",
-    "test": "mocha -r ts-node/register 'tests/**/*.ts'",
+    "test": "mocha -r ts-node/register 'tests/**/*.ts' --timeout 20000",
     "lint": "npm run lint:js",
     "lint:fix": "npm run lint:js:fix",
     "lint:js": "eslint --ignore-path .gitignore .",
@@ -33,7 +33,6 @@
   "dependencies": {
     "@arbitrum/sdk": "^2.0.1",
     "@ethersproject/abstract-provider": "^5.6.1",
-    "cosmiconfig": "^7.0.1",
     "ethers": "^5.6.8",
     "husky": "^8.0.1"
   },
