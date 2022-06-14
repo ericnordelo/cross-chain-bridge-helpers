@@ -7,11 +7,15 @@ export async function getCrossChainTxConfigParams(
   l2CallDataHex: string,
   l2CallValue: BigNumber,
   l2Provider: Provider,
-): Promise<BigNumber> {
-  return l2Provider.estimateGas({
+): Promise<object> {
+  const gasLimit = await l2Provider.estimateGas({
     from: sender,
     to: destAddr,
     data: l2CallDataHex,
     value: l2CallValue,
   });
+
+  return {
+    gasLimit,
+  };
 }

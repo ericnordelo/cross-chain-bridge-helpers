@@ -97,8 +97,9 @@ export class L2Bridge implements IBridge {
         };
 
         return utils.defaultAbiCoder.encode(
-          ['uint256', 'uint256', 'uint256', 'address', 'address', 'uint256', 'uint256'],
+          ['bytes32', 'uint256', 'uint256', 'uint256', 'address', 'address', 'uint256', 'uint256'],
           [
+            this._bridgeId,
             arbParams.totalL2GasCosts,
             l2CallValue,
             arbParams.maxSubmissionFee,
@@ -110,12 +111,26 @@ export class L2Bridge implements IBridge {
         );
       }
       case 'Arbitrum-L2L1': {
+        const arbParams = params as {
+          amountToDeposit: BigNumber;
+        };
+        const amountToDeposit = arbParams.amountToDeposit;
+
+        return utils.defaultAbiCoder.encode(
+          ['bytes32', 'uint256'],
+          [this._bridgeId, amountToDeposit],
+        );
       }
       case 'Optimism-L1L2': {
-        const gasLimit = params;
-        return utils.defaultAbiCoder.encode(['uint32'], [gasLimit]);
+        const optParams = params as {
+          gasLimit: BigNumber;
+        };
+        const gasLimit = optParams.gasLimit;
+
+        return utils.defaultAbiCoder.encode(['bytes32', 'uint32'], [this._bridgeId, gasLimit]);
       }
       case 'Optimism-L2L1': {
+        return utils.defaultAbiCoder.encode(['bytes32', 'uint32'], [this._bridgeId, 0]);
       }
     }
   }
