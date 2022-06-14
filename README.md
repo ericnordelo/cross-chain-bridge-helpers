@@ -12,39 +12,34 @@ For now supports only Arbitrum and Optimism.
    $ yarn add @ericnordelo/cross-chain-bridge-helpers
    ```
 
-2. Add the `ccbh.js` config file with the required providers:
-
-   ```sh
-   require('dotenv').config();
-
-   module.exports = {
-      arbitrumL2Rpc: process.env.ARBITRUM_L2_RPC || '',
-      arbitrumL1Rpc: process.env.ARBITRUM_L1_RPC || '',
-      optimismL2Rpc: process.env.OPTIMISM_L2_RPC || '',
-   };
-
-   ```
-
-3. Add the `.env` file with the required environment for the `ccbh.js` config file:
-
-   ```sh
-   ARBITRUM_L2_RPC=[your rpc uri]
-
-   ARBITRUM_L1_RPC=[your rpc uri]
-
-   OPTIMISM_L2_RPC=[your rpc uri]
-   ```
-
-4. Import the `L2Bridge` class, and load the providers after creating the instance:
+2. Import the `L2Bridge` class, and load the providers after creating the instance:
 
    ```code
     import { L2Bridge } from '@ericnordelo/cross-chain-bridge-helpers';
 
+    (...)
+
     const bridge = new L2Bridge('Arbitrum-L1L2');
-    await bridge.loadProviders();
+    await bridge.loadProviders({ l1Provider, l2Provider });
    ```
 
-5. Now, you can use either the `getCrossChainTxConfigParameters` or the `getCrossChainTxConfigBytes` helpers, that will return the appropriate parameters from the selected bridge:
+3. The providers should be loaded separately. This gives you the power to integrate with different frameworks and enviroments, just passing the providers through (ex: hardhat). For now, the library requires using `ethers` providers. Here is an example:
+
+   ```code
+   import { L2Bridge } from '../src/lib/bridges/layer2s/L2Bridge';
+   import { providers } from 'ethers';
+   import { config } from 'dotenv';
+
+   config({ path: './path/to/.env' });
+
+   const l1Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L1_RPC);
+   const l2Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L2_RPC);
+
+   const bridge = new L2Bridge('Arbitrum-L1L2-Rinkeby');
+   await bridge.loadProviders({ l1Provider, l2Provider });
+   ```
+
+4. Now, you can use either the `getCrossChainTxConfigParameters` or the `getCrossChainTxConfigBytes` helpers, that will return the appropriate parameters from the selected bridge:
 
    ```code
     async getCrossChainTxConfigParameters(
@@ -62,4 +57,18 @@ For now supports only Arbitrum and Optimism.
     ): Promise<string>;
    ```
 
-6. The `getCrossChainTxConfigBytes` result, can be used as bridgeConfig in the Openzeppelin library.
+5. The `getCrossChainTxConfigBytes` result, can be used as bridgeConfig in the Openzeppelin library.
+
+6. This are the accepted bridges in the current version:
+
+   ```code
+    export type Bridge =
+      | 'Arbitrum-L1L2'
+      | 'Arbitrum-L2L1'
+      | 'Optimism-L1L2'
+      | 'Optimism-L2L1'
+      | 'Arbitrum-L1L2-Rinkeby'
+      | 'Arbitrum-L2L1-Rinkeby'
+      | 'Optimism-L1L2-Kovan'
+      | 'Optimism-L2L1-Kovan';
+   ```
