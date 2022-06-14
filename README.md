@@ -40,21 +40,21 @@ For now supports only Arbitrum and Optimism.
    ```code
     import { L2Bridge } from '@ericnordelo/cross-chain-bridge-helpers';
 
-    const bridge = new L2Bridge('Arbitrum');
+    const bridge = new L2Bridge('Arbitrum-L1L2');
     await bridge.loadProviders();
    ```
 
-5. Now, you can use either the `getProtocolConfigParameters` or the `getProtocolConfigBytes` helpers, that will return the appropriate parameters from the selected protocol:
+5. Now, you can use either the `getCrossChainTxConfigParameters` or the `getCrossChainTxConfigBytes` helpers, that will return the appropriate parameters from the selected bridge:
 
    ```code
-    async getProtocolConfigParameters(
+    async getCrossChainTxConfigParameters(
       sender: string,
       destAddr: string,
       l2CallDataHex: string,
       l2CallValue: BigNumber,
     ) : Promise<object>;
 
-    async getProtocolConfigBytes(
+    async getCrossChainTxConfigBytes(
       sender: string,
       destAddr: string,
       l2CallDataHex: string,
@@ -62,4 +62,4 @@ For now supports only Arbitrum and Optimism.
     ): Promise<string>;
    ```
 
-6. The `getProtocolConfigBytes` result, can be used as bridgeConfig in the Openzeppelin library.
+6. The `getCrossChainTxConfigBytes` result, can be used as bridgeConfig in the Openzeppelin library.
