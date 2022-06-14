@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Provider } from '@ethersproject/abstract-provider';
-import { Protocol, IBridge } from '../types/bridge';
-import { getBridgeConfigParams as getArbitrumParams } from './implementations/arbitrum';
-import { getBridgeConfigParams as getOptimismParams } from './implementations/optimism';
+import { Bridge, IBridge } from '../types/bridge';
+import { getCrossChainTxConfigParams as getArbitrumParams } from './implementations/arbitrum';
+import { getCrossChainTxConfigParams as getOptimismParams } from './implementations/optimism';
 import { BigNumber, utils, providers } from 'ethers';
 import { getConfig } from '../../config';
 
@@ -10,32 +10,45 @@ export class L2Bridge implements IBridge {
   public l1Provider: Provider;
   public l2Provider: Provider;
 
-  constructor(public readonly protocol: Protocol) {}
+  private _bridgeId: string;
+
+  constructor(public readonly bridge: Bridge) {
+    // bridge Id is the kaccak256 of the
+    this._bridgeId = utils.id(bridge);
+  }
 
   public async loadProviders() {
     const { config } = await getConfig();
 
-    switch (this.protocol) {
-      case 'Arbitrum': {
+    switch (this.bridge) {
+      case 'Arbitrum-L1L2': {
         this.l2Provider = new providers.JsonRpcProvider(config.arbitrumL2Rpc);
         this.l1Provider = new providers.JsonRpcProvider(config.arbitrumL1Rpc);
         break;
       }
-      case 'Optimism': {
+      case 'Arbitrum-L2L1': {
+        // no blockchain query required
+        break;
+      }
+      case 'Optimism-L1L2': {
         this.l2Provider = new providers.JsonRpcProvider(config.optimismL2Rpc);
+        break;
+      }
+      case 'Optimism-L2L1': {
+        // no blockchain query required
         break;
       }
     }
   }
 
-  public async getProtocolConfigParameters(
+  public async getCrossChainTxConfigParameters(
     sender: string,
     destAddr: string,
     l2CallDataHex: string,
     l2CallValue: BigNumber,
   ): Promise<object> {
-    switch (this.protocol) {
-      case 'Arbitrum': {
+    switch (this.bridge) {
+      case 'Arbitrum-L1L2': {
         return getArbitrumParams(
           sender,
           destAddr,
@@ -45,27 +58,37 @@ export class L2Bridge implements IBridge {
           this.l2Provider,
         );
       }
-      case 'Optimism': {
+      case 'Arbitrum-L2L1': {
+        return {
+          amountToDeposit: l2CallValue,
+        };
+      }
+      case 'Optimism-L1L2': {
         return getOptimismParams(sender, destAddr, l2CallDataHex, l2CallValue, this.l2Provider);
+      }
+      case 'Arbitrum-L2L1': {
+        return {
+          gasLimit: 0,
+        };
       }
     }
   }
 
-  public async getProtocolConfigBytes(
+  public async getCrossChainTxConfigBytes(
     sender: string,
     destAddr: string,
     l2CallDataHex: string,
     l2CallValue: BigNumber,
   ): Promise<string> {
-    const params = await this.getProtocolConfigParameters(
+    const params = await this.getCrossChainTxConfigParameters(
       sender,
       destAddr,
       l2CallDataHex,
       l2CallValue,
     );
 
-    switch (this.protocol) {
-      case 'Arbitrum': {
+    switch (this.bridge) {
+      case 'Arbitrum-L1L2': {
         const arbParams = params as {
           gasLimit: BigNumber;
           maxSubmissionFee: BigNumber;
@@ -86,9 +109,13 @@ export class L2Bridge implements IBridge {
           ],
         );
       }
-      case 'Optimism': {
-        // In Optimism just the gasLimit is encoded
-        return utils.defaultAbiCoder.encode(['uint32'], [params]);
+      case 'Arbitrum-L2L1': {
+      }
+      case 'Optimism-L1L2': {
+        const gasLimit = params;
+        return utils.defaultAbiCoder.encode(['uint32'], [gasLimit]);
+      }
+      case 'Optimism-L2L1': {
       }
     }
   }

@@ -2,19 +2,19 @@
 import { Provider } from '@ethersproject/abstract-provider';
 import { BigNumber } from 'ethers';
 
-export type Protocol = 'Arbitrum' | 'Optimism';
+export type Bridge = 'Arbitrum-L1L2' | 'Arbitrum-L2L1' | 'Optimism-L1L2' | 'Optimism-L2L1';
 
 export interface IBridge {
-  protocol: Protocol;
+  bridge: Bridge;
   l1Provider: Provider;
   l2Provider: Provider;
-  getProtocolConfigParameters: (
+  getCrossChainTxConfigParameters: (
     sender: string,
     destAddr: string,
     l2CallDataHex: string,
     l2CallValue: BigNumber,
   ) => Promise<object>;
-  getProtocolConfigBytes: (
+  getCrossChainTxConfigBytes: (
     sender: string,
     destAddr: string,
     l2CallDataHex: string,

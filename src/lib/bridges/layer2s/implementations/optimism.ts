@@ -1,7 +1,7 @@
 import { Provider } from '@ethersproject/abstract-provider';
 import { BigNumber } from 'ethers';
 
-export async function getBridgeConfigParams(
+export async function getCrossChainTxConfigParams(
   sender: string,
   destAddr: string,
   l2CallDataHex: string,
