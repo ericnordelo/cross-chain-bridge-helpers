@@ -16,7 +16,7 @@ export class L2Bridge implements IBridge {
 
   constructor(public readonly bridge: Bridge) {
     // bridge Id is the kaccak256 of the bridge (without the testnet)
-    this.bridgeId = utils.id(bridge);
+    this.bridgeId = utils.id(this._formatBridgeForId(bridge));
   }
 
   public async loadProviders(providers: { l1Provider: Provider; l2Provider: Provider }) {
@@ -149,5 +149,7 @@ export class L2Bridge implements IBridge {
     } else if (bridge.endsWith('-Kovan')) {
       return bridge.slice(0, -6);
     }
+
+    return bridge;
   }
 }
