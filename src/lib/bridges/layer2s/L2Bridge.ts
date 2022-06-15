@@ -15,7 +15,7 @@ export class L2Bridge implements IBridge {
   public readonly bridgeId: string;
 
   constructor(public readonly bridge: Bridge) {
-    // bridge Id is the kaccak256 of the
+    // bridge Id is the kaccak256 of the bridge (without the testnet)
     this.bridgeId = utils.id(bridge);
   }
 
@@ -140,6 +140,14 @@ export class L2Bridge implements IBridge {
     if (l2Network.chainId != bridges[this.bridge].l2ChainId) {
       console.log('Error: Invalid l2 provider chain Id');
       process.exit(0);
+    }
+  }
+
+  private _formatBridgeForId(bridge: Bridge): string {
+    if (bridge.endsWith('-Rinkeby')) {
+      return bridge.slice(0, -8);
+    } else if (bridge.endsWith('-Kovan')) {
+      return bridge.slice(0, -6);
     }
   }
 }
