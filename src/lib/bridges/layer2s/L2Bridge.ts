@@ -15,8 +15,8 @@ export class L2Bridge implements IBridge {
   public readonly bridgeId: string;
 
   constructor(public readonly bridge: Bridge) {
-    // bridge Id is the kaccak256 of the bridge (without the testnet)
-    this.bridgeId = utils.id(this._formatBridgeForId(bridge));
+    // bridge Id is the firts 4 bytes of the keccak256 of the bridge (without the testnet)
+    this.bridgeId = utils.id(this._formatBridgeForId(bridge)).slice(0, 10);
   }
 
   public async loadProviders(providers: { l1Provider: Provider; l2Provider: Provider }) {
