@@ -59,7 +59,7 @@ For now supports only Arbitrum and Optimism.
 
 5. The `getCrossChainTxConfigBytes` result, can be used as bridgeConfig in the Openzeppelin library.
 
-6. This are the accepted bridges in the current version:
+6. These are the accepted bridges in the current version:
 
    ```code
     export type Bridge =
