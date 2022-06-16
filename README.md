@@ -12,21 +12,21 @@ For now supports only Arbitrum and Optimism.
    $ yarn add @ericnordelo/cross-chain-bridge-helpers
    ```
 
-2. Import the `L2Bridge` class, and load the providers after creating the instance:
+2. Import the `L2BridgeFactory` class, and load the providers after getting the instance:
 
    ```code
-    import { L2Bridge } from '@ericnordelo/cross-chain-bridge-helpers';
+    import { L2BridgeFactory } from '@ericnordelo/cross-chain-bridge-helpers';
 
     (...)
 
-    const bridge = new L2Bridge('Arbitrum-L1L2');
+    const bridge = L2BridgeFactory.get('Arbitrum-L1L2');
     await bridge.loadProviders({ l1Provider, l2Provider });
    ```
 
 3. The providers should be loaded separately. This gives you the power to integrate with different frameworks and enviroments, just passing the providers through (ex: hardhat). For now, the library requires using `ethers` providers. Here is an example:
 
    ```code
-   import { L2Bridge } from '../src/lib/bridges/layer2s/L2Bridge';
+   import { L2BridgeFactory } from '@ericnordelo/cross-chain-bridge-helpers';
    import { providers } from 'ethers';
    import { config } from 'dotenv';
 
@@ -35,7 +35,7 @@ For now supports only Arbitrum and Optimism.
    const l1Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L1_RPC);
    const l2Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L2_RPC);
 
-   const bridge = new L2Bridge('Arbitrum-L1L2-Rinkeby');
+   const bridge = L2BridgeFactory.get('Arbitrum-L1L2-Rinkeby');
    await bridge.loadProviders({ l1Provider, l2Provider });
    ```
 
