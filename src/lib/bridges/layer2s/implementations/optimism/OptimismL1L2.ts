@@ -74,11 +74,13 @@ export class OptimismL1L2Bridge extends L2Bridge {
     l2CallValue: BigNumber,
     l2Provider: Provider,
   ): Promise<object> {
+    const senderBalance = await l2Provider.getBalance(sender);
+
     const gasLimit = await l2Provider.estimateGas({
       from: sender,
       to: destAddr,
       data: l2CallDataHex,
-      value: l2CallValue,
+      value: senderBalance.gte(l2CallValue) ? l2CallValue : BigNumber.from(0),
     });
 
     // get current prepaid gas from CTC
