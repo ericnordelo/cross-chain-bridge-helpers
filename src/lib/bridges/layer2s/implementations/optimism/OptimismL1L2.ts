@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { canonicalTransactionChainABI as ABI } from './ABIs';
 import { Provider } from '@ethersproject/abstract-provider';
 import { Bridge } from '../../../types/bridge';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber, utils, Contract } from 'ethers';
 import { L2Bridge } from '../../L2Bridge';
 
 export class OptimismL1L2Bridge extends L2Bridge {
@@ -10,8 +11,16 @@ export class OptimismL1L2Bridge extends L2Bridge {
 
   public readonly bridgeId: string;
 
+  private canonicalTransactionChain: string;
+
   constructor(public readonly bridge: Bridge) {
     super(bridge);
+
+    if (bridge == 'Optimism-L1L2') {
+      this.canonicalTransactionChain = '0x5E4e65926BA27467555EB562121fac00D24E9dD2';
+    } else if (bridge == 'Optimism-L1L2-Kovan') {
+      this.canonicalTransactionChain = '0xf7B88A133202d41Fe5E2Ab22e6309a1A4D50AF74';
+    }
   }
 
   public async loadProviders(providers: { l1Provider: Provider; l2Provider: Provider }) {
@@ -72,8 +81,12 @@ export class OptimismL1L2Bridge extends L2Bridge {
       value: l2CallValue,
     });
 
+    // get current prepaid gas from CTC
+    const ctc = new Contract(this.canonicalTransactionChain, ABI, this.l1Provider);
+    const prepaidGas = await ctc.enqueueL2GasPrepaid();
+
     return {
-      gasLimit,
+      gasLimit: gasLimit > prepaidGas.toNumber() ? gasLimit : prepaidGas.toNumber(),
     };
   }
 }

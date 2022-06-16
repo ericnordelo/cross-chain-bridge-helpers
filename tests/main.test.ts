@@ -11,10 +11,10 @@ describe('Plugin', function () {
   });
 
   it('runs', async function () {
-    const l1Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L1_RPC);
-    const l2Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L2_RPC);
+    const l1Provider = new providers.JsonRpcProvider(process.env.OPTIMISM_L1_RPC);
+    const l2Provider = new providers.JsonRpcProvider(process.env.OPTIMISM_L2_RPC);
 
-    const bridge = L2BridgeFactory.get('Arbitrum-L1L2-Rinkeby');
+    const bridge = L2BridgeFactory.get('Optimism-L1L2-Kovan');
     await bridge.loadProviders({ l1Provider, l2Provider });
 
     await bridge.getCrossChainTxConfigBytes(
