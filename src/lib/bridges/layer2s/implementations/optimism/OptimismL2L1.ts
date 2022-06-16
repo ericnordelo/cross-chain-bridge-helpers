@@ -34,8 +34,11 @@ export class OptimismL2L1Bridge extends L2Bridge {
     _sender: string,
     _destAddr: string,
     _l2CallDataHex: string,
-    _l2CallValue: BigNumber,
+    l2CallValue: BigNumber,
   ): Promise<string> {
-    return utils.defaultAbiCoder.encode(['bytes4', 'uint32'], [this.bridgeId, 0]);
+    return utils.defaultAbiCoder.encode(
+      ['bytes4', 'uint32', 'uint256'],
+      [this.bridgeId, 0, l2CallValue],
+    );
   }
 }

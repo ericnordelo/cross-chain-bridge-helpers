@@ -52,7 +52,10 @@ export class OptimismL1L2Bridge extends L2Bridge {
 
     const gasLimit = optParams.gasLimit;
 
-    return utils.defaultAbiCoder.encode(['bytes4', 'uint32'], [this.bridgeId, gasLimit]);
+    return utils.defaultAbiCoder.encode(
+      ['bytes4', 'uint32', 'uint256'],
+      [this.bridgeId, gasLimit, l2CallValue],
+    );
   }
 
   private async _getCrossChainTxConfigParams(
