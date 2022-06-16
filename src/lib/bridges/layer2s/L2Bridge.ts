@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Provider } from '@ethersproject/abstract-provider';
-import { Bridge, IBridge } from '../types/bridge';
-import { getCrossChainTxConfigParams as getArbitrumParams } from './implementations/arbitrum';
-import { getCrossChainTxConfigParams as getOptimismParams } from './implementations/optimism';
 import { BigNumber, utils, providers } from 'ethers';
+import { Bridge, IBridge } from '../types/bridge';
 import { bridges } from '../../constants';
 
 type Network = providers.Network;
 
-export class L2Bridge implements IBridge {
+export abstract class L2Bridge implements IBridge {
   public l1Provider: Provider;
   public l2Provider: Provider;
 
@@ -30,107 +28,19 @@ export class L2Bridge implements IBridge {
     this._checkNetworks(l1Network, l2Network);
   }
 
-  public async getCrossChainTxConfigParameters(
+  abstract getCrossChainTxConfigParameters(
     sender: string,
     destAddr: string,
     l2CallDataHex: string,
     l2CallValue: BigNumber,
-  ): Promise<object> {
-    switch (this.bridge) {
-      case 'Arbitrum-L1L2':
-      case 'Arbitrum-L1L2-Rinkeby': {
-        return getArbitrumParams(
-          sender,
-          destAddr,
-          l2CallDataHex,
-          l2CallValue,
-          this.l1Provider,
-          this.l2Provider,
-        );
-      }
-      case 'Arbitrum-L2L1':
-      case 'Arbitrum-L2L1-Rinkeby': {
-        return {
-          amountToDeposit: l2CallValue,
-        };
-      }
-      case 'Optimism-L1L2':
-      case 'Optimism-L1L2-Kovan': {
-        return getOptimismParams(sender, destAddr, l2CallDataHex, l2CallValue, this.l2Provider);
-      }
-      case 'Optimism-L2L1':
-      case 'Optimism-L2L1-Kovan': {
-        return {
-          gasLimit: 0,
-        };
-      }
-    }
-  }
+  ): Promise<object>;
 
-  public async getCrossChainTxConfigBytes(
+  abstract getCrossChainTxConfigBytes(
     sender: string,
     destAddr: string,
     l2CallDataHex: string,
     l2CallValue: BigNumber,
-  ): Promise<string> {
-    const params = await this.getCrossChainTxConfigParameters(
-      sender,
-      destAddr,
-      l2CallDataHex,
-      l2CallValue,
-    );
-
-    switch (this.bridge) {
-      case 'Arbitrum-L1L2':
-      case 'Arbitrum-L1L2-Rinkeby': {
-        const arbParams = params as {
-          gasLimit: BigNumber;
-          maxSubmissionFee: BigNumber;
-          maxFeePerGas: BigNumber;
-          totalL2GasCosts: BigNumber;
-        };
-
-        return utils.defaultAbiCoder.encode(
-          ['bytes32', 'uint256', 'uint256', 'uint256', 'address', 'address', 'uint256', 'uint256'],
-          [
-            this.bridgeId,
-            arbParams.totalL2GasCosts,
-            l2CallValue,
-            arbParams.maxSubmissionFee,
-            sender,
-            sender,
-            arbParams.gasLimit,
-            arbParams.maxFeePerGas,
-          ],
-        );
-      }
-      case 'Arbitrum-L2L1':
-      case 'Arbitrum-L2L1-Rinkeby': {
-        const arbParams = params as {
-          amountToDeposit: BigNumber;
-        };
-        const amountToDeposit = arbParams.amountToDeposit;
-
-        return utils.defaultAbiCoder.encode(
-          ['bytes32', 'uint256'],
-          [this.bridgeId, amountToDeposit],
-        );
-      }
-      case 'Optimism-L1L2':
-      case 'Optimism-L1L2-Kovan': {
-        const optParams = params as {
-          gasLimit: BigNumber;
-        };
-        const gasLimit = optParams.gasLimit;
-
-        return utils.defaultAbiCoder.encode(['bytes32', 'uint32'], [this.bridgeId, gasLimit]);
-      }
-      case 'Optimism-L2L1':
-      case 'Optimism-L2L1-Kovan': {
-        return utils.defaultAbiCoder.encode(['bytes32', 'uint32'], [this.bridgeId, 0]);
-      }
-    }
-  }
+  ): Promise<string>;
 
   private _checkNetworks(l1Network: Network, l2Network: Network): void {
     if (l1Network.chainId != bridges[this.bridge].l1ChainId) {

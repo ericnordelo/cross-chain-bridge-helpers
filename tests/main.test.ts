@@ -1,4 +1,4 @@
-import { L2Bridge } from '../src/lib/bridges/layer2s/L2Bridge';
+import { L2BridgeFactory } from '../src';
 import { BigNumber, providers } from 'ethers';
 import { assert } from 'chai';
 import { config } from 'dotenv';
@@ -14,7 +14,7 @@ describe('Plugin', function () {
     const l1Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L1_RPC);
     const l2Provider = new providers.JsonRpcProvider(process.env.ARBITRUM_L2_RPC);
 
-    const bridge = new L2Bridge('Arbitrum-L1L2-Rinkeby');
+    const bridge = L2BridgeFactory.get('Arbitrum-L1L2-Rinkeby');
     await bridge.loadProviders({ l1Provider, l2Provider });
 
     await bridge.getCrossChainTxConfigBytes(

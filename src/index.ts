@@ -1,1 +1,1 @@
-export { L2Bridge } from './lib/bridges/layer2s/L2Bridge';
+export { L2BridgeFactory } from './lib/bridges/layer2s/L2BridgeFactory';
