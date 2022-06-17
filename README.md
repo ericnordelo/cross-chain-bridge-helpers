@@ -14,7 +14,7 @@ For now supports only Arbitrum and Optimism.
 
 2. Import the `L2BridgeFactory` class, and load the providers after getting the instance:
 
-   ```code
+   ```ts
     import { L2BridgeFactory } from '@ericnordelo/cross-chain-bridge-helpers';
 
     (...)
@@ -25,7 +25,7 @@ For now supports only Arbitrum and Optimism.
 
 3. The providers should be loaded separately. This gives you the power to integrate with different frameworks and enviroments, just passing the providers through (ex: hardhat). For now, the library requires using `ethers` providers. Here is an example:
 
-   ```code
+   ```ts
    import { L2BridgeFactory } from '@ericnordelo/cross-chain-bridge-helpers';
    import { providers } from 'ethers';
    import { config } from 'dotenv';
@@ -41,7 +41,7 @@ For now supports only Arbitrum and Optimism.
 
 4. Now, you can use either the `getCrossChainTxConfigParameters` or the `getCrossChainTxConfigBytes` helpers, that will return the appropriate parameters from the selected bridge:
 
-   ```code
+   ```ts
     async getCrossChainTxConfigParameters(
       sender: string,
       destAddr: string,
@@ -61,14 +61,14 @@ For now supports only Arbitrum and Optimism.
 
 6. These are the accepted bridges in the current version:
 
-   ```code
-    export type Bridge =
-      | 'Arbitrum-L1L2'
-      | 'Arbitrum-L2L1'
-      | 'Optimism-L1L2'
-      | 'Optimism-L2L1'
-      | 'Arbitrum-L1L2-Rinkeby'
-      | 'Arbitrum-L2L1-Rinkeby'
-      | 'Optimism-L1L2-Kovan'
-      | 'Optimism-L2L1-Kovan';
+   ```ts
+   export type Bridge =
+     | 'Arbitrum-L1L2'
+     | 'Arbitrum-L2L1'
+     | 'Optimism-L1L2'
+     | 'Optimism-L2L1'
+     | 'Arbitrum-L1L2-Rinkeby'
+     | 'Arbitrum-L2L1-Rinkeby'
+     | 'Optimism-L1L2-Kovan'
+     | 'Optimism-L2L1-Kovan';
    ```
